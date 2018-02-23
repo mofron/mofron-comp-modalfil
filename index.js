@@ -1,5 +1,6 @@
 /**
- * @file   mofron-comp-{@comp-name}/index.js
+ * @file   mofron-comp-modal/index.js
+ * @brief  modal component for mofron
  * @author simpart
  */
 let mf = require('mofron');
@@ -7,7 +8,7 @@ let Blur = require('mofron-effect-blur');
 
 /**
  * @class mofron.comp.Modal
- * @brief modal component for mofron
+ * @brief modal component class
  */
 mf.comp.Modal = class extends mf.Component {
     
