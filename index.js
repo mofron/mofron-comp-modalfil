@@ -31,14 +31,9 @@ mf.comp.Modal = class extends mf.Component {
     initDomConts (prm) {
         try {
             super.initDomConts();
-            this.size(
-                window.innerWidth,
-                window.innerHeight
-            );
+            this.size('100%', '100%');
             this.style({
                 'position' : 'fixed',
-                'top'      : '0px',
-                'left'     : '0px',
                 'z-index'  : '9999'
             });
             
