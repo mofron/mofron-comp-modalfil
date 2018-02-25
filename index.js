@@ -10,12 +10,12 @@ let Blur = require('mofron-effect-blur');
  * @class mofron.comp.Modal
  * @brief modal component class
  */
-mf.comp.Modal = class extends mf.Component {
+mf.comp.ModalFil = class extends mf.Component {
     
     constructor (po) {
         try {
             super();
-            this.name('Modal');
+            this.name('ModalFil');
             this.prmOpt(po);
         } catch (e) {
             console.error(e.stack);
@@ -31,23 +31,40 @@ mf.comp.Modal = class extends mf.Component {
     initDomConts (prm) {
         try {
             super.initDomConts();
-            this.size('100%', '100%');
+            this.size(
+                '100%',
+                window.innerHeight
+            );
+            
             this.style({
                 'position' : 'fixed',
                 'z-index'  : '9999'
             });
             
+            /* set default color */
             this.color(
-                new mf.Color(240,240,240, this.clearVal())
+                new mf.Color(240,240,240, this.clear())
             );
             
+            /* set window resize event */
+            mf.func.addResizeWin(
+                (prm) => {
+                    try {
+                        prm.height(window.innerHeight);
+                    } catch (e) {
+                        console.error(e.stack);
+                        throw e;
+                    }
+                },
+                this
+            );
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    clearVal (val) {
+    clear (val) {
         try {
             if (undefined === val) {
                 /* getter */
@@ -64,35 +81,32 @@ mf.comp.Modal = class extends mf.Component {
         }
     }
     
-    blur (val, tgt) {
+    blur (val) {
         try {
             if (undefined === val) {
                 /* getter */
                 return (undefined === this.m_blur_val) ? null : this.m_blur_val;
             }
             /* setter  */
-            if (('number' !== typeof val) || (null === tgt)) {
+            if ('number' !== typeof val) {
                 throw new Error('invalid parameter');
             }
-            this.blurTgt(tgt);
             this.m_blur_val = val;
+            if (true === this.visible()) {
+                this.execBlur(val);
+            }
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    blurTgt (val) {
+    execBlur () {
         try {
-            if (undefined === val) {
-                /* getter */
-                return (undefined === this.m_blur_tgt) ? null : this.m_blur_tgt;
+            if ( (null !== this.blur()) && (undefined !== document.body) )  {
+                let set_blur = (true === this.visible()) ? this.blur() : 0;
+                document.body.style['filter'] = 'blur(' + set_blur + 'px)';
             }
-            /* setter */
-            if (true !== mf.func.isInclude(val, 'Component')) {
-                throw new Error('invalid parameter');
-            }
-            this.m_blur_tgt = val;
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -104,16 +118,7 @@ mf.comp.Modal = class extends mf.Component {
             let ret = super.visible(val);
             if (undefined === ret) {
                 /* setter */
-                if ( (true === val) && (null !== this.blurTgt())) {
-                    let exe_blur = new Blur();
-                    exe_blur.value(this.blur());
-                    this.blurTgt().addEffect(exe_blur);
-                    exe_blur.execute(true);
-                } else if ( (false === val) && (null !== this.blurTgt()) ) {
-                    let tgt_blur = this.blurTgt().getConfig('effect', 'Blur');
-                    tgt_blur.execute(false);
-                    /* delete  blur */
-                }
+                this.execBlur();
             }
             return ret;
         } catch (e) {
@@ -121,15 +126,5 @@ mf.comp.Modal = class extends mf.Component {
             throw e;
         }
     }
-    
-    themeConts () {
-        try {
-            
-        } catch (e) {
-            console.error(e.stack);
-            throw e;
-        }
-    }
-    
 }
-module.exports = mofron.comp.Modal;
+module.exports = mofron.comp.ModalFil;
