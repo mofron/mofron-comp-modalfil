@@ -1,6 +1,6 @@
 /**
- * @file   mofron-comp-modal/index.js
- * @brief  modal component for mofron
+ * @file   mofron-comp-modalfil/index.js
+ * @brief  modal filter component for mofron
  * @author simpart
  */
 let mf = require('mofron');
@@ -26,9 +26,10 @@ mf.comp.ModalFil = class extends mf.Component {
     /**
      * initialize dom contents
      * 
-     * @param prm : (Date object) display date
+     * @param prm : root component
+     * @param blr : blur value
      */
-    initDomConts (prm) {
+    initDomConts (prm, blr) {
         try {
             super.initDomConts();
             this.size(
@@ -38,7 +39,9 @@ mf.comp.ModalFil = class extends mf.Component {
             
             this.style({
                 'position' : 'fixed',
-                'z-index'  : '9999'
+                'z-index'  : '9999',
+                'top'      : '0px',
+                'left'     : '0px'
             });
             
             /* set default color */
@@ -46,11 +49,15 @@ mf.comp.ModalFil = class extends mf.Component {
                 new mf.Color(240,240,240, this.clear())
             );
             
+            if (undefined !== prm) {
+                this.blur(prm, blr);
+            }
+            
             /* set window resize event */
             mf.func.addResizeWin(
-                (prm) => {
+                (fil) => {
                     try {
-                        prm.height(window.innerHeight);
+                        fil.height(window.innerHeight);
                     } catch (e) {
                         console.error(e.stack);
                         throw e;
@@ -81,46 +88,36 @@ mf.comp.ModalFil = class extends mf.Component {
         }
     }
     
-    blur (val) {
+    blurTgt (val) {
         try {
             if (undefined === val) {
                 /* getter */
-                return (undefined === this.m_blur_val) ? null : this.m_blur_val;
+                return (undefined === this.m_blur_tgt) ? null : this.m_blur_tgt;
             }
-            /* setter  */
-            if ('number' !== typeof val) {
+            /* setter */
+            if (true !== mf.func.isInclude(val, 'Component')) {
                 throw new Error('invalid parameter');
             }
-            this.m_blur_val = val;
-            if (true === this.visible()) {
-                this.execBlur(val);
-            }
+            this.m_blur_tgt = val;
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    execBlur () {
+    blur (tgt, val) {
         try {
-            if ( (null !== this.blur()) && (undefined !== document.body) )  {
-                let set_blur = (true === this.visible()) ? this.blur() : 0;
-                document.body.style['filter'] = 'blur(' + set_blur + 'px)';
+            if (undefined === tgt) {
+                /* getter */
+                if (null === this.blurTgt()) {
+                    return null;
+                }
+                let tblur = this.blurTgt().getConfig('effect', 'Blur');
+                return (null === tblur) ? null : tblur.value();
             }
-        } catch (e) {
-            console.error(e.stack);
-            throw e;
-        }
-    }
-    
-    visible (val) {
-        try {
-            let ret = super.visible(val);
-            if (undefined === ret) {
-                /* setter */
-                this.execBlur();
-            }
-            return ret;
+            /* setter  */
+            this.blurTgt(tgt);
+            tgt.addEffect(new Blur(val));
         } catch (e) {
             console.error(e.stack);
             throw e;

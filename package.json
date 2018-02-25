@@ -1,7 +1,7 @@
 {
-  "name": "mofron-comp-modal",
-  "version": "0.0.4",
-  "description": "modal component for mofron",
+  "name": "mofron-comp-modalfil",
+  "version": "0.0.5",
+  "description": "this component has been disused",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
