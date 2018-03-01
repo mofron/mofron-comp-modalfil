@@ -109,15 +109,35 @@ mf.comp.ModalFil = class extends mf.Component {
         try {
             if (undefined === tgt) {
                 /* getter */
-                if (null === this.blurTgt()) {
+                if ( (null === this.blurTgt()) ||
+                     (undefined === this.m_blur)) {
                     return null;
                 }
-                let tblur = this.blurTgt().getConfig('effect', 'Blur');
-                return (null === tblur) ? null : tblur.value();
+                return this.m_blur;
             }
             /* setter  */
             this.blurTgt(tgt);
-            tgt.addEffect(new Blur(val));
+            if (undefined !== this.m_blur) {
+                this.m_blur.value(val);
+            } else {
+                this.m_blur = new Blur(val);
+            }
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    visible (flg) {
+        try {
+            let ret = super.visible(flg);
+            if (true === flg) {
+                this.blurTgt().addEffect(this.blur());
+            } else if (false === flg) {
+                this.blur().execute(false);
+                this.blurTgt().delConfig('effect', 'Blur');
+            }
+            return ret;
         } catch (e) {
             console.error(e.stack);
             throw e;
