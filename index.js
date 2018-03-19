@@ -132,10 +132,14 @@ mf.comp.ModalFil = class extends mf.Component {
         try {
             let ret = super.visible(flg);
             if (true === flg) {
-                this.blurTgt().addEffect(this.blur());
+                if (null !== this.blurTgt()) {
+                    this.blurTgt().addEffect(this.blur());
+                }
             } else if (false === flg) {
-                this.blur().execute(false);
-                this.blurTgt().delConfig('effect', 'Blur');
+                if (null !== this.blurTgt()) {
+                    this.blur().execute(false);
+                    this.blurTgt().delConfig('effect', 'Blur');
+                }
             }
             return ret;
         } catch (e) {
