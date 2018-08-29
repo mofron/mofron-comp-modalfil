@@ -3,8 +3,8 @@
  * @brief  modal filter component for mofron
  * @author simpart
  */
-let mf = require('mofron');
-let Blur = require('mofron-effect-blur');
+const mf = require('mofron');
+const Blur = require('mofron-effect-blur');
 
 /**
  * @class mofron.comp.Modal
@@ -26,38 +26,32 @@ mf.comp.ModalFil = class extends mf.Component {
     /**
      * initialize dom contents
      * 
-     * @param prm : root component
-     * @param blr : blur value
      */
-    initDomConts (prm, blr) {
+    initDomConts () {
         try {
             super.initDomConts();
             this.size(
                 '100%',
-                window.innerHeight
+                window.innerHeight + 'px'
             );
             
             this.style({
                 'position' : 'fixed',
                 'z-index'  : '9999',
-                'top'      : '0px',
-                'left'     : '0px'
+                'top'      : '0rem',
+                'left'     : '0rem'
             });
             
             /* set default color */
-            this.color(
+            this.baseColor(
                 new mf.Color(240,240,240, this.clear())
             );
             
-            if (undefined !== prm) {
-                this.blur(prm, blr);
-            }
-            
             /* set window resize event */
-            mf.func.addResizeWin(
+            mf.func.rsizWinEvent(
                 (fil) => {
                     try {
-                        fil.height(window.innerHeight);
+                        fil.height(window.innerHeight + 'px');
                     } catch (e) {
                         console.error(e.stack);
                         throw e;
@@ -132,3 +126,4 @@ mf.comp.ModalFil = class extends mf.Component {
     }
 }
 module.exports = mofron.comp.ModalFil;
+/* end of file */
