@@ -1,0 +1,12 @@
+<require>
+    <tag module="mofron-comp-text">Text</tag>
+    <tag module="mofron-comp-modalfil">Mdlfil</tag>
+</require>
+
+<script>
+mfil.visible(true);
+</script>
+
+<Text>Modal Filter</Text>
+<Mdlfil name=mfil blur="0.01rem">
+<Mdlfil>

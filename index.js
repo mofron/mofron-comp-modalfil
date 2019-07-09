@@ -1,21 +1,30 @@
 /**
- * @file   mofron-comp-modalfil/index.js
- * @brief  modal filter component for mofron
+ * @file mofron-comp-modalfil/index.js
+ * @brief modal filter component for mofron
+ *        apply a dim filter to the entire screen as when displaying a modal window
+ * @feature modal windows can be easily implemented by adding child components to this component
+ *          it is possible to make the back look like frosted glass (blur)
+ * @attention default visible() is false
+ *            this comp must be positioned to root for enabling the "blur" function
  * @author simpart
  */
-const mf = require('mofron');
-const Blur = require('mofron-effect-blur');
+const mf = require("mofron");
+const Blur = require("mofron-effect-blur");
+const SyncWin = require("mofron-effect-syncwin");
 
-/**
- * @class mofron.comp.Modal
- * @brief modal component class
- */
 mf.comp.ModalFil = class extends mf.Component {
     
+    /**
+     * initialize component
+     *
+     * @param (component/object) component: child component
+     *                           object: component options
+     * @type private
+     */
     constructor (po) {
         try {
             super();
-            this.name('ModalFil');
+            this.name("ModalFil");
             this.prmOpt(po);
         } catch (e) {
             console.error(e.stack);
@@ -26,99 +35,119 @@ mf.comp.ModalFil = class extends mf.Component {
     /**
      * initialize dom contents
      * 
+     * @type private
      */
     initDomConts () {
         try {
             super.initDomConts();
-            this.size(
-                '100%',
-                window.innerHeight + 'px'
-            );
-            
+            this.effect(new SyncWin());
             this.style({
                 'position' : 'fixed',
                 'z-index'  : '9999',
                 'top'      : '0rem',
                 'left'     : '0rem'
             });
-            
             /* set default color */
-            this.baseColor(
-                new mf.Color(240,240,240, this.clear())
-            );
-            
-            /* set window resize event */
-            mf.func.rsizWinEvent(
-                (fil) => {
-                    try {
-                        fil.height(window.innerHeight + 'px');
-                    } catch (e) {
-                        console.error(e.stack);
-                        throw e;
-                    }
-                },
-                this
-            );
+            this.baseColor([240,240,240,0.5]);
+            this.visible(false);
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    clear (val) {
+    /**
+     * set blur effect
+     * 
+     * @type private
+     */
+    beforeRender () {
         try {
-            if (undefined === val) {
-                /* getter */
-                return (undefined === this.m_clear) ? 0.5 : this.m_clear;
+            super.beforeRender();
+            if ( (null === this.parent()) ||
+                 (null === this.blur()) ) {
+                return;
             }
-            /* setter */
-            if ('number' !== typeof val) {
-                throw new Error('invalid parameter');
-            }
-            this.m_clear = val;
-        } catch (e) {
-            console.error(e.stack);
-            throw e;
-        }
-    }
-    
-    blurTgt (val) {
-        try {
-            if (undefined === val) {
-                /* getter */
-                return (undefined === this.m_blur_tgt) ? null : this.m_blur_tgt;
-            }
-            /* setter */
-            if (true !== mf.func.isInclude(val, 'Component')) {
-                throw new Error('invalid parameter');
-            }
-            this.m_blur_tgt = val;
-        } catch (e) {
-            console.error(e.stack);
-            throw e;
-        }
-    }
-    
-    blur (tgt, val) {
-        try {
-            if (undefined === tgt) {
-                /* getter */
-                if ( (null === this.blurTgt()) ||
-                     (undefined === this.m_blur)) {
-                    return null;
+            let pchd = this.parent().child();
+            for (let pc in pchd) {
+                if (this.getId() !== pchd[pc].getId()) {
+                    pchd[pc].effect([
+                        new Blur({ value: this.blur(), tag: "ModalFil", eid: 2 }),
+                        new Blur({ value: "0rem",      tag: "ModalFil", eid: 3 })
+                    ]);
                 }
-                return this.m_blur;
             }
-            /* setter  */
-            this.blurTgt(tgt);
-            if (undefined !== this.m_blur) {
-                this.m_blur.value(val);
-            } else {
-                this.m_blur = new Blur({
-                    value  : val
-                });
-                this.addEffect(this.m_blur);
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    /**
+     * set backgrond color
+     *
+     * @param (string(color)/array(r,g,b)) backgrond color
+     * @return (string) backgrond color
+     * @type parameter
+     */
+    mainColor (prm) {
+        try { return this.baseColor(prm); } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    /**
+     * set backgrond color
+     *
+     * @param (string(color)/array(r,g,b)) backgrond color
+     * @return (string) backgrond color
+     * @type parameter
+     */
+    baseColor (prm) {
+        try {
+            if ((true === Array.isArray(prm)) && (3 === prm.length)) {
+                prm.push(0.5);
             }
+            return super.baseColor(prm);
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    /**
+     * blur value
+     *
+     * @param (string (size)) blur value
+     * @return (string) blur value
+     * @type parameter
+     */
+    blur (prm) {
+        try { return this.member("blur", "string", prm); } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    /**
+     * execute blur effect
+     *
+     * @type private
+     */
+    visible (p1, p2) {
+        try {
+            if (('boolean' === typeof p1) && (null !== this.parent())) {
+                let pchd = this.parent().child();
+                for (let pc in pchd) {
+                    let blur = pchd[pc].effect(["Blur","ModalFil"]);
+                    if ( (null === blur) || (undefined === blur[1]) ) {
+                        continue;
+                    }
+                    blur[(true === p1) ? 0 : 1].execute();
+                }
+            }
+            return super.visible(p1, p2);
         } catch (e) {
             console.error(e.stack);
             throw e;
