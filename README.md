@@ -29,8 +29,7 @@ mfil.visible(true);
 </script>
 
 <Text>Modal Filter</Text>
-<Mdlfil name=mfil blur="0.01rem">
-<Mdlfil>
+<Mdlfil name=mfil blur="0.01rem"><Mdlfil>
 ```
 # Parameter
 
