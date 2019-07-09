@@ -1,7 +1,7 @@
 {
   "name": "mofron-comp-modalfil",
-  "version": "0.0.9",
-  "description": "this component has been disused",
+  "version": "0.1.0",
+  "description": "modal filter component for mofron",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,7 +17,7 @@
     "front-end"
   ],
   "author": "simparts",
-  "license": "SEE LICENSE IN LICNSE ",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/mofron/mofron-comp-modal/issues"
   },
