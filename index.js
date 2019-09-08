@@ -45,11 +45,11 @@ mf.comp.ModalFil = class extends mf.Component {
                 'position' : 'fixed',
                 'z-index'  : '9999',
                 'top'      : '0rem',
-                'left'     : '0rem'
+                'left'     : '0rem',
+		'display'  : 'none'
             });
             /* set default color */
             this.baseColor([240,240,240,0.5]);
-            this.visible(false);
         } catch (e) {
             console.error(e.stack);
             throw e;
