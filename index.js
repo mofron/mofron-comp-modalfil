@@ -6,7 +6,7 @@
  *          it is possible to make the back look like frosted glass (blur)
  * @attention default visible is false
  *            this component must be positioned to root for enabling the "blur" function
- *            other components that are the same hierarchy from this component are added Blur-Effect.
+ *            other components that are the same hierarchy from this component are added (mofron-effect-blur)[https://github.com/mofron/mofron-effect-blur.git].
  * @license MIT
  */
 const Blur = require("mofron-effect-blur");
