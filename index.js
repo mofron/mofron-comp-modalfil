@@ -4,28 +4,36 @@
  *        apply a dim filter to the entire screen as when displaying a modal window
  * @feature modal windows can be easily implemented by adding child components to this component
  *          it is possible to make the back look like frosted glass (blur)
- * @attention default visible() is false
- *            this comp must be positioned to root for enabling the "blur" function
- * @author simpart
+ * @attention default visible is false
+ *            this component must be positioned to root for enabling the "blur" function
+ *            other components that are the same hierarchy from this component are added Blur-Effect.
+ * @license MIT
  */
-const mf = require("mofron");
 const Blur = require("mofron-effect-blur");
 const SyncWin = require("mofron-effect-syncwin");
+const comutl = mofron.util.common;
 
-mf.comp.ModalFil = class extends mf.Component {
-    
+module.exports = class extends mofron.class.Component {
     /**
      * initialize component
      *
-     * @param (component/object) component: child component
-     *                           object: component options
+     * @param (mixed) blur config
+     *                key-value: component config
+     * @short blur
      * @type private
      */
-    constructor (po) {
+    constructor (p1) {
         try {
             super();
             this.name("ModalFil");
-            this.prmOpt(po);
+            this.shortForm("blur");
+            /* init config */
+            this.confmng().add("blur", { type: "size", init: "0rem" });
+	    this.confmng().add("speed", { type: "number", init: 0 });
+	    /* set config */
+	    if (0 < arguments.length) {
+                this.config(p1);
+	    }
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -50,6 +58,7 @@ mf.comp.ModalFil = class extends mf.Component {
             });
             /* set default color */
             this.baseColor([240,240,240,0.5]);
+	    this.styleDom().style().listener('display',this.switchBlur,this);
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -64,16 +73,19 @@ mf.comp.ModalFil = class extends mf.Component {
     beforeRender () {
         try {
             super.beforeRender();
-            if ( (null === this.parent()) ||
-                 (null === this.blur()) ) {
+            if ((null === this.parent()) || ("0rem" === this.blur())) {
                 return;
             }
             let pchd = this.parent().child();
             for (let pc in pchd) {
-                if (this.getId() !== pchd[pc].getId()) {
+                if (this.id() !== pchd[pc].id()) {
                     pchd[pc].effect([
-                        new Blur({ value: this.blur(), tag: "ModalFil", eid: 2 }),
-                        new Blur({ value: "0rem",      tag: "ModalFil", eid: 3 })
+                        new Blur({
+			    value: this.blur(), tag: "ModalFil", speed: this.speed(), eid: -1
+			}),
+                        new Blur({
+			    value: "0rem", tag: "ModalFil", speed: this.speed(), eid: -1
+			})
                     ]);
                 }
             }
@@ -86,12 +98,16 @@ mf.comp.ModalFil = class extends mf.Component {
     /**
      * set backgrond color
      *
-     * @param (string(color)/array(r,g,b)) backgrond color
+     * @param (mixed (color)) string: background color name, #hex
+     *                        array: [red, green, blue, (alpha)]
+     * @param (key-value) style option
      * @return (string) backgrond color
      * @type parameter
      */
-    mainColor (prm) {
-        try { return this.baseColor(prm); } catch (e) {
+    mainColor (prm, opt) {
+        try {
+	    return this.baseColor(prm, opt);
+	} catch (e) {
             console.error(e.stack);
             throw e;
         }
@@ -100,15 +116,24 @@ mf.comp.ModalFil = class extends mf.Component {
     /**
      * set backgrond color
      *
-     * @param (string(color)/array(r,g,b)) backgrond color
+     * @param (mixed (color)) string: background color name, #hex
+     *                        array: [red, green, blue, (alpha)]
+     * @param (key-value) style option
      * @return (string) backgrond color
      * @type parameter
      */
-    baseColor (prm) {
+    baseColor (prm, opt) {
         try {
-            if ((true === Array.isArray(prm)) && (3 === prm.length)) {
-                prm.push(0.5);
-            }
+	    let p_prm = undefined;
+	    if (undefined !== prm) {
+                p_prm = comutl.getcolor(prm);
+		let rgba = p_prm.rgba();
+                if ( (1 === rgba[3]) &&
+		     ((false === Array.isArray(prm)) || (undefined === prm[3])) ) {
+                    p_prm.rgba(rgba[0], rgba[1], rgba[2], 0.5);
+		}
+
+	    }
             return super.baseColor(prm);
         } catch (e) {
             console.error(e.stack);
@@ -120,39 +145,64 @@ mf.comp.ModalFil = class extends mf.Component {
      * blur value
      *
      * @param (string (size)) blur value
+     * @param (number) blur speed (ms)
      * @return (string) blur value
      * @type parameter
      */
-    blur (prm) {
-        try { return this.member("blur", "string", prm); } catch (e) {
+    blur (val, spd) {
+        try {
+	    if (undefined !== spd) {
+                this.speed(spd);
+	    }
+	    return this.confmng("blur", val);
+	} catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
     /**
-     * execute blur effect
-     *
-     * @type private
+     * blur speed
+     * 
+     * @param (number) blur speed (ms)
+     * @return (number) blur speed (ms)
+     * @type parameter
      */
-    visible (p1, p2) {
+    speed (prm) {
         try {
-            if (('boolean' === typeof p1) && (null !== this.parent())) {
-                let pchd = this.parent().child();
-                for (let pc in pchd) {
-                    let blur = pchd[pc].effect(["Blur","ModalFil"]);
-                    if ( (null === blur) || (undefined === blur[1]) ) {
-                        continue;
-                    }
-                    blur[(true === p1) ? 0 : 1].execute();
-                }
-            }
-            return super.visible(p1, p2);
-        } catch (e) {
+            return this.confmng("speed", prm);
+	} catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
+    
+    /**
+     * switch blur effect
+     * 
+     * @param (mixed) before style value (string/null)
+     * @param (mixed) before style value (string/null)
+     * @type private
+     */
+    switchBlur (af,bf,cmp) {
+        try {
+            let pchd = cmp.parent().child();
+            for (let pc in pchd) {
+                if (cmp.id() !== pchd[pc].id()) {
+		    let opt = {
+		        name: "Blur", tag: "ModalFil",
+			value: ("none" === af) ? "0rem" : cmp.blur()
+		    };
+                    let eff = pchd[pc].effect(opt);
+		    if (true === comutl.isinc(eff, "Blur")) {
+                        eff.execute();
+		    }
+                }
+            }
+	} catch (e) {
+            console.error(e.stack);
+            throw e;
+	}
+    }
 }
-module.exports = mofron.comp.ModalFil;
 /* end of file */
