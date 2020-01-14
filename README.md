@@ -11,7 +11,7 @@ apply a dim filter to the entire screen as when displaying a modal window
 ## Attention
  - default visible is false
  - this component must be positioned to root for enabling the "blur" function
- - other components that are the same hierarchy from this component are added (mofron-effect-blur)[https://github.com/mofron/mofron-effect-blur.git].
+ - other components that are the same hierarchy from this component are added [mofron-effect-blur](https://github.com/mofron/mofron-effect-blur.git).
 
 # Install
 ```
