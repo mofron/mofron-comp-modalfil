@@ -1,6 +1,6 @@
 {
   "name": "mofron-comp-modalfil",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "modal filter component for mofron",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "url": "git+https://github.com/mofron/mofron-comp-modal.git"
   },
   "keywords": [
-    "front-end"
+    "front-end","mofron"
   ],
   "author": "simparts",
   "license": "MIT",

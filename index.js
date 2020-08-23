@@ -25,7 +25,7 @@ module.exports = class extends mofron.class.Component {
     constructor (p1) {
         try {
             super();
-            this.name("ModalFil");
+            this.modname("ModalFil");
             this.shortForm("blur");
             /* init config */
             this.confmng().add("blur", { type: "size", init: "0rem" });

@@ -20,10 +20,10 @@ npm install mofron mofron-comp-modalfil
 
 # Sample
 ```html
-<require>
+<setting>
     <tag load="mofron-comp-text">Text</tag>
     <tag load="mofron-comp-modalfil">Mdlfil</tag>
-</require>
+</setting>
 
 <script run=after>
     mfil.visible(true);
