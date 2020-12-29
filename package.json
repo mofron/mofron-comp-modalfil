@@ -1,6 +1,6 @@
 {
   "name": "mofron-comp-modalfil",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "modal filter component for mofron",
   "main": "index.js",
   "scripts": {

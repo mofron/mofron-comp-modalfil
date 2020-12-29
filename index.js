@@ -48,16 +48,17 @@ module.exports = class extends mofron.class.Component {
     initDomConts () {
         try {
             super.initDomConts();
-            this.effect(new SyncWin());
+	    let pvt = { private:true };
+            this.effect(new SyncWin(), pvt);
             this.style({
                 'position' : 'fixed',
                 'z-index'  : '9999',
                 'top'      : '0rem',
                 'left'     : '0rem',
 		'display'  : 'none'
-            });
+            }, pvt);
             /* set default color */
-            this.baseColor([240,240,240,0.5]);
+            this.baseColor([240,240,240,0.5], pvt);
 	    this.styleDom().style().listener('display',this.switchBlur,this);
         } catch (e) {
             console.error(e.stack);
