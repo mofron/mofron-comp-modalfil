@@ -55,10 +55,12 @@ module.exports = class extends mofron.class.Component {
                 'z-index'  : '9999',
                 'top'      : '0rem',
                 'left'     : '0rem',
-		'display'  : 'none'
             }, pvt);
             /* set default color */
             this.baseColor([240,240,240,0.5], pvt);
+
+            this.visible(false);
+
 	    this.styleDom().style().listener('display',this.switchBlur,this);
         } catch (e) {
             console.error(e.stack);
