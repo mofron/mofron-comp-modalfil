@@ -189,6 +189,9 @@ module.exports = class extends mofron.class.Component {
      */
     switchBlur (af,bf,cmp) {
         try {
+	    if (null === cmp.parent()) {
+                return;
+	    }
             let pchd = cmp.parent().child();
             for (let pc in pchd) {
                 if (cmp.id() !== pchd[pc].id()) {
